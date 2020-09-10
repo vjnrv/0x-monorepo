@@ -43,6 +43,7 @@ export enum ERC20BridgeSource {
     MultiHop = 'MultiHop',
     Swerve = 'Swerve',
     SushiSwap = 'SushiSwap',
+    Dodo = 'DODO',
 }
 
 // tslint:disable: enum-naming
