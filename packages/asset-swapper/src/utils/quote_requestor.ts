@@ -8,7 +8,7 @@ import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
 
 import { constants } from '../constants';
-import { MarketOperation, RfqtMakerAssetOfferings, RfqtRequestOpts } from '../types';
+import { LogFunction, MarketOperation, RfqtMakerAssetOfferings, RfqtRequestOpts } from '../types';
 
 import { ONE_SECOND_MS } from './market_operation_utils/constants';
 import { RfqMakerBlacklist } from './rfq_maker_blacklist';
@@ -107,8 +107,6 @@ function convertIfAxiosError(error: any): Error | object /* axios' .d.ts has Axi
     }
 }
 
-export type LogFunction = (obj: object, msg?: string, ...args: any[]) => void;
-
 export class QuoteRequestor {
     private readonly _schemaValidator: SchemaValidator = new SchemaValidator();
     private readonly _orderSignatureToMakerUri: { [orderSignature: string]: string } = {};
@@ -120,7 +118,9 @@ export class QuoteRequestor {
         private readonly _infoLogger: LogFunction = (obj, msg) =>
             logUtils.log(`${msg ? `${msg}: ` : ''}${JSON.stringify(obj)}`),
         private readonly _expiryBufferMs: number = constants.DEFAULT_SWAP_QUOTER_OPTS.expiryBufferMs,
-    ) {}
+    ) {
+        rfqMakerBlacklist.infoLogger = this._infoLogger;
+    }
 
     public async requestRfqtFirmQuotesAsync(
         makerAssetData: string,
